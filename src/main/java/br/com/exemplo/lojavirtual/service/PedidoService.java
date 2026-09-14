@@ -17,14 +17,6 @@ import br.com.exemplo.lojavirtual.model.Pedido;
 import br.com.exemplo.lojavirtual.model.Produto;
 import br.com.exemplo.lojavirtual.repository.PedidoRepository;
 
-/**
- * @Transactional(readOnly = true) na classe: como Pedido tem relações LAZY
- * (cliente, itens.pedido), precisamos que a sessão do Hibernate continue
- * aberta enquanto montamos o PedidoDTO — é isso que a anotação garante.
- * Sem ela, dependeríamos do "Open Session in View" do Spring Boot (que vem
- * ligado por padrão, mas é considerado boa prática desligar em produção —
- * assunto da Aula 7).
- */
 @Service
 @Transactional(readOnly = true)
 public class PedidoService {
@@ -60,10 +52,18 @@ public class PedidoService {
 
         for (ItemPedidoRequestDTO itemDto : dto.getItens()) {
             Produto produto = produtoService.buscarEntidade(itemDto.getProdutoId());
-            // preco "congelado" no momento da compra: se o produto mudar de
-            // preço amanhã, este pedido já feito continua com o valor daqui.
+
+            if (itemDto.getQuantidade() > produto.getQuantidadeEmEstoque()) {
+                throw new IllegalArgumentException(
+                        "Estoque insuficiente para o produto '" + produto.getNome() + "': "
+                                + "disponível " + produto.getQuantidadeEmEstoque()
+                                + ", solicitado " + itemDto.getQuantidade());
+            }
+
             ItemPedido item = new ItemPedido(produto, itemDto.getQuantidade(), produto.getPreco());
             pedido.adicionarItem(item);
+
+            produto.setQuantidadeEmEstoque(produto.getQuantidadeEmEstoque() - itemDto.getQuantidade());
         }
 
         return PedidoMapper.paraDTO(repository.save(pedido));
@@ -72,7 +72,7 @@ public class PedidoService {
     @Transactional
     public void deletar(Long id) {
         Pedido pedido = buscarEntidade(id);
-        repository.delete(pedido); // cascade + orphanRemoval cuidam dos itens
+        repository.delete(pedido);
     }
 
     private Pedido buscarEntidade(Long id) {

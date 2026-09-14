@@ -9,6 +9,7 @@ public final class ClienteMapper {
     }
 
     public static ClienteDTO paraDTO(Cliente cliente) {
-        return new ClienteDTO(cliente.getId(), cliente.getNome(), cliente.getEmail());
+        return new ClienteDTO(cliente.getId(), cliente.getNome(), cliente.getEmail(),
+                cliente.getDataHoraAtualizacao());
     }
 }

@@ -1,26 +1,18 @@
 package br.com.exemplo.lojavirtual.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
-/**
- * Lado "UM" do relacionamento 1:N com Produto.
- *
- * mappedBy = "categoria" aponta para o atributo "categoria" lá em Produto —
- * é ELE quem tem a coluna de chave estrangeira (categoria_id). Aqui do lado
- * de Categoria não existe coluna nenhuma; é só uma "visão" da relação.
- *
- * Sem cascade e sem orphanRemoval de propósito: excluir uma Categoria NÃO
- * deve excluir os Produtos que pertencem a ela (ao contrário de Pedido/
- * ItemPedido, mais abaixo, onde o cascade faz todo sentido).
- */
 @Entity
 @Table(name = "categoria")
 public class Categoria {
@@ -31,6 +23,9 @@ public class Categoria {
 
     private String nome;
 
+    @Column(name = "data_hora_lancamento", nullable = false)
+    private LocalDateTime dataHoraLancamento;
+
     @OneToMany(mappedBy = "categoria", cascade = {})
     private List<Produto> produtos = new ArrayList<>();
 
@@ -40,6 +35,17 @@ public class Categoria {
     public Categoria(Long id, String nome) {
         this.id = id;
         this.nome = nome;
+    }
+
+    public Categoria(Long id, String nome, LocalDateTime dataHoraLancamento) {
+        this.id = id;
+        this.nome = nome;
+        this.dataHoraLancamento = dataHoraLancamento;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.dataHoraLancamento = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -56,6 +62,14 @@ public class Categoria {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public LocalDateTime getDataHoraLancamento() {
+        return dataHoraLancamento;
+    }
+
+    public void setDataHoraLancamento(LocalDateTime dataHoraLancamento) {
+        this.dataHoraLancamento = dataHoraLancamento;
     }
 
     public List<Produto> getProdutos() {

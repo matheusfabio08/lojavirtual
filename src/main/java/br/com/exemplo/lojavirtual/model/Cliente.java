@@ -1,17 +1,15 @@
 package br.com.exemplo.lojavirtual.model;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-/**
- * Segunda entidade completa do projeto — reforça, de forma independente, o
- * mesmo padrão de camadas + validação + tratamento de erros já aplicado a
- * Produto. A partir da Aula 6, Cliente ganha um relacionamento 1:N com
- * Pedido.
- */
 @Entity
 @Table(name = "cliente")
 public class Cliente {
@@ -24,6 +22,9 @@ public class Cliente {
     private String email;
     private String cpf;
 
+    @Column(name = "data_hora_atualizacao")
+    private LocalDateTime dataHoraAtualizacao;
+
     public Cliente() {
     }
 
@@ -32,6 +33,11 @@ public class Cliente {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dataHoraAtualizacao = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -64,5 +70,13 @@ public class Cliente {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public LocalDateTime getDataHoraAtualizacao() {
+        return dataHoraAtualizacao;
+    }
+
+    public void setDataHoraAtualizacao(LocalDateTime dataHoraAtualizacao) {
+        this.dataHoraAtualizacao = dataHoraAtualizacao;
     }
 }

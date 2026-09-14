@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.exemplo.lojavirtual.dto.RelatorioClienteDTO;
 import br.com.exemplo.lojavirtual.dto.RelatorioDTO;
 import br.com.exemplo.lojavirtual.service.RelatorioService;
 
@@ -23,5 +24,10 @@ public class RelatorioController {
     @GetMapping("/total-por-categoria")
     public ResponseEntity<List<RelatorioDTO>> totalPorCategoria() {
         return ResponseEntity.ok(service.totalVendidoPorCategoria());
+    }
+
+    @GetMapping("/total-por-cliente")
+    public ResponseEntity<List<RelatorioClienteDTO>> totalPorCliente() {
+        return ResponseEntity.ok(service.totalComprasPorCliente());
     }
 }

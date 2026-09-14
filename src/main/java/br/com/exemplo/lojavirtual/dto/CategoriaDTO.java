@@ -1,22 +1,20 @@
 package br.com.exemplo.lojavirtual.dto;
 
-/**
- * Repare que este DTO NÃO tem uma lista de produtos. Se devolvêssemos
- * Categoria -> List<Produto> -> cada Produto com sua Categoria -> ...
- * teríamos uma referência circular e um JSON gigante (ou um erro de
- * serialização). O DTO é exatamente o remédio para esse tipo de problema.
- */
+import java.time.LocalDateTime;
+
 public class CategoriaDTO {
 
     private Long id;
     private String nome;
+    private LocalDateTime dataHoraLancamento;
 
     public CategoriaDTO() {
     }
 
-    public CategoriaDTO(Long id, String nome) {
+    public CategoriaDTO(Long id, String nome, LocalDateTime dataHoraLancamento) {
         this.id = id;
         this.nome = nome;
+        this.dataHoraLancamento = dataHoraLancamento;
     }
 
     public Long getId() {
@@ -33,5 +31,13 @@ public class CategoriaDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public LocalDateTime getDataHoraLancamento() {
+        return dataHoraLancamento;
+    }
+
+    public void setDataHoraLancamento(LocalDateTime dataHoraLancamento) {
+        this.dataHoraLancamento = dataHoraLancamento;
     }
 }

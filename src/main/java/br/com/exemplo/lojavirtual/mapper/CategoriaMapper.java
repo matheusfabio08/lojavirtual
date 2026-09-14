@@ -9,6 +9,6 @@ public final class CategoriaMapper {
     }
 
     public static CategoriaDTO paraDTO(Categoria categoria) {
-        return new CategoriaDTO(categoria.getId(), categoria.getNome());
+        return new CategoriaDTO(categoria.getId(), categoria.getNome(), categoria.getDataHoraLancamento());
     }
 }
